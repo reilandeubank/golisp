@@ -222,8 +222,8 @@ func (s *Scanner) tokenizeSymbol() {
 	}
 
 	// Check for existing keyword
-	identifier := s.Source[s.Start:s.Curr]
-	if tokentype, exists := Keywords[identifier]; exists {
+	symbol := s.Source[s.Start:s.Curr]
+	if tokentype, exists := Keywords[symbol]; exists {
         s.addToken(tokentype)
     } else {
         // Set to default value if the key is not found

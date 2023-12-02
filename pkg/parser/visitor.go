@@ -8,7 +8,7 @@ type ExprVisitor interface {
 	VisitAtomExpr(l Atom) (interface{}, error)
 	// VisitCondExpr(c Cond) (interface{}, error)
 	// VisitUnaryExpr(u Unary) (interface{}, error)
-	// VisitVariableExpr(v Variable) (interface{}, error)
+	VisitSymbolExpr(s Symbol) (interface{}, error)
 	// VisitAssignExpr(a Assign) (interface{}, error)
 	// VisitLogicalExpr(l Logical) (interface{}, error)
 	// VisitCallExpr(c Call) (interface{}, error)

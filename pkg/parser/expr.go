@@ -1,7 +1,6 @@
 package parser
 
 import (
-	// "fmt"
 	"github.com/reilandeubank/golisp/pkg/scanner"
 )
 
@@ -56,7 +55,10 @@ func (l ListExpr) Accept(v ExprVisitor) (interface{}, error) {
 func (l ListExpr) String() string {
 	output := "(" + l.Head.String()
 	for _, expr := range l.Tail {
-		output += " " + expr.String()
+		if expr != nil {
+			// fmt.Println(reflect.TypeOf(expr))
+			output += " " + expr.String()
+		}
 	}
 	output += ")"
 	return output
@@ -109,21 +111,21 @@ func (k Keyword) String() string {
 // 	return "(" + b.Operator.Lexeme + b.Left.String() + b.Right.String() + ")"
 // }
 
-// // Variable
+// Variable
 
-// // Variable is a struct that implements the Expression interface
-// type Variable struct {
-// 	Name scanner.Token
-// }
+// Variable is a struct that implements the Expression interface
+type Symbol struct {
+	Name scanner.Token
+}
 
-// // Accept() is a method that returns a string representation of the expression
-// func (v Variable) Accept(vi ExprVisitor) (interface{}, error) {
-// 	return vi.VisitVariableExpr(v)
-// }
+// Accept() is a method that returns a string representation of the expression
+func (s Symbol) Accept(v ExprVisitor) (interface{}, error) {
+	return v.VisitSymbolExpr(s)
+}
 
-// func (v Variable) String() string {
-// 	return v.Name.Lexeme
-// }
+func (s Symbol) String() string {
+	return s.Name.Lexeme
+}
 
 // // Assignment
 

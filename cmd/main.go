@@ -78,6 +78,8 @@ func run(source string) {
 
 	fmt.Println(expr.String())
 
+	fmt.Println("TODO: Implement interpreter")
+
 	// err = i.Interpret(statements)
 	// if err != nil {
 	// 	fmt.Println(err)
