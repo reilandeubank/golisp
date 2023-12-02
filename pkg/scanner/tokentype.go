@@ -14,20 +14,14 @@ const (
 	STAR
 
 	// One or two character tokens.
-	BANG
-	BANG_EQUAL
 	EQUAL
-	EQUAL_EQUAL
 	GREATER
-	GREATER_EQUAL
 	LESS
-	LESS_EQUAL
 
 	// Literals.
 	SYMBOL
 	STRING
 	NUMBER
-	SEXPR
 
 	// Keywords.
 	DEFINE
@@ -36,6 +30,9 @@ const (
 	COND
 	CAR
 	CDR
+	NIL
+	TRUE
+	FALSE
 	ANDQ
 	ORQ
 	NOTQ
@@ -43,7 +40,6 @@ const (
 	SYMBOLQ
 	LISTQ
 	NILQ
-	EQQ
 
 	WHITESPACE
 	OTHER

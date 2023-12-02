@@ -9,13 +9,16 @@ import (
 	"unicode/utf8"
 )
 
-var keywords = map[string]TokenType{
+var Keywords = map[string]TokenType{
 	"define":  DEFINE,
 	"set":     SET,
 	"cons":    CONS,
 	"cond":    COND,
 	"car":     CAR,
 	"cdr":     CDR,
+	"nil":     NIL,
+	"true":    TRUE,
+	"false":   FALSE,
 	"and?":    ANDQ,
 	"or?":     ORQ,
 	"not?":    NOTQ,
@@ -23,7 +26,6 @@ var keywords = map[string]TokenType{
 	"symbol?": SYMBOLQ,
 	"list?":   LISTQ,
 	"nil?":    NILQ,
-	"eq?":     EQQ,
 }
 
 
@@ -97,31 +99,9 @@ func (s *Scanner) ScanToken() {
 	case '+': s.addToken(PLUS)
 	case ';': s.addToken(SEMICOLON)
 	case '*': s.addToken(STAR)
-	// Dual-character tokens
-	case '!':
-		if s.match('=') {
-			s.addToken(BANG_EQUAL)
-		} else {
-			s.addToken(BANG)
-		}
-	case '=':
-		if s.match('=') {
-			s.addToken(EQUAL_EQUAL)
-		} else {
-			s.addToken(EQUAL)
-		}
-	case '<':
-		if s.match('=') {
-			s.addToken(LESS_EQUAL)
-		} else {
-			s.addToken(LESS)
-		}
-	case '>':
-		if s.match('=') {
-			s.addToken(GREATER_EQUAL)
-		} else {
-			s.addToken(GREATER)
-		}
+	case '=': s.addToken(EQUAL)
+	case '<': s.addToken(LESS)
+	case '>': s.addToken(GREATER)
 	case '/':
 		if s.match('/') {
 			for !s.isAtEnd() && s.peek() != '\n' {
@@ -243,7 +223,7 @@ func (s *Scanner) tokenizeSymbol() {
 
 	// Check for existing keyword
 	identifier := s.Source[s.Start:s.Curr]
-	if tokentype, exists := keywords[identifier]; exists {
+	if tokentype, exists := Keywords[identifier]; exists {
         s.addToken(tokentype)
     } else {
         // Set to default value if the key is not found

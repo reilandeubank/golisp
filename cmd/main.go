@@ -7,7 +7,7 @@ import (
 	"strings"
 	"github.com/reilandeubank/golisp/pkg/scanner"
 	// "github.com/reilandeubank/golisp/pkg/interpreter"
-	// "github.com/reilandeubank/golisp/pkg/parser"
+	"github.com/reilandeubank/golisp/pkg/parser"
 )
 
 // var i interpreter.Interpreter = interpreter.NewInterpreter()
@@ -59,21 +59,24 @@ func run(source string) {
 	tokens := thisScanner.ScanTokens()
 
 	// For now, just print the tokens
-	for _, token := range tokens {
-		fmt.Println(token.String())
-	}
+	// for _, token := range tokens {
+	// 	fmt.Println(token.String())
+	// }
 
 	if scanner.HadError() {
 		os.Exit(65)
 		return
 	}
 
-	// parser := parser.NewParser(tokens)
-	// statements, err := parser.Parse()
-	// if err != nil {
-	// 	os.Exit(65)
-	// 	return
-	// }
+	parser := parser.NewParser(tokens)
+	expr, err := parser.Parse()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(65)
+		return
+	}
+
+	fmt.Println(expr.String())
 
 	// err = i.Interpret(statements)
 	// if err != nil {
