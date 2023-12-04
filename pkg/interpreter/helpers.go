@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"reflect"
 
-	//"github.com/reilandeubank/golsip/pkg/parser"
 	"github.com/reilandeubank/golisp/pkg/scanner"
+	"github.com/reilandeubank/golsip/pkg/parser"
 )
 
 func isTruthy(object interface{}) bool {
@@ -57,13 +57,11 @@ func stringify(object interface{}) string {
 	return fmt.Sprintf("%v", object)
 }
 
-func isOperator(object scanner.Token) bool {
-	if object.Type == scanner.PLUS || object.Type == scanner.MINUS || object.Type == scanner.STAR ||
-		object.Type == scanner.SLASH ||
-		object.Type == scanner.EQUAL ||
-		object.Type == scanner.LESS ||
-		object.Type == scanner.GREATER {
+func isOperator(expr parser.Expression) bool {
+	switch expr.(type) {
+	case Operator:
 		return true
+	default:
+		return false
 	}
-	return false
 }
