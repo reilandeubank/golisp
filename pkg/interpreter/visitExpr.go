@@ -13,10 +13,45 @@ func (i *Interpreter) VisitListExpr(l parser.ListExpr) (interface{}, error) {
 		o.Operands = l.Tail
 		return i.evaluate(o)
 	}
+
+	if k, ok := l.Head.(*parser.Keyword); ok {
+		k.Args = l.Tail
+		return i.evaluate(k)
+	}
 	return nil, fmt.Errorf("not implemented")
 }
 
 func (i *Interpreter) VisitKeywordExpr(k parser.Keyword) (interface{}, error) {
+	switch k.Keyword.Type {
+	case scanner.CAR:
+		car, err := i.evaluate(k.Args[0])
+		if err != nil {
+			return nil, err
+		}
+		return parser.Atom{Value: car}, nil
+	case scanner.CDR:
+		return i.cdr(k)
+	case scanner.COND:
+		for j := 0; j < len(k.Args); j += 2 {
+			condition, err := i.evaluate(k.Args[j])
+			if err != nil {
+				return nil, err
+			}
+			if isTruthy(condition) && j+1 < len(k.Args) {
+				return i.evaluate(k.Args[j+1])
+			}
+		}
+		return nil, &RuntimeError{Token: k.Keyword, Message: "Lack of true condition"}
+	case scanner.NUMBERQ:
+		if len(k.Args) != 1 {
+			return nil, &RuntimeError{Token: k.Keyword, Message: "NUMBER? operation must have 1 operand"}
+		}
+		expr, err := i.evaluate(k.Args[0])
+		if err != nil {
+			return nil, err
+		}
+		return checkNumberOperand(k.Keyword, expr)
+	}
 	return nil, fmt.Errorf("not implemented")
 }
 

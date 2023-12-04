@@ -67,6 +67,7 @@ func (l ListExpr) String() string {
 
 type Keyword struct {
 	Keyword scanner.Token
+	Args    []Expression
 }
 
 func (k Keyword) Accept(v ExprVisitor) (interface{}, error) {

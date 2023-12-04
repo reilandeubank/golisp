@@ -3,7 +3,7 @@ package interpreter
 import (
 	"fmt"
 
-	"github.com/reilandeubank/golox/pkg/scanner"
+	"github.com/reilandeubank/golisp/pkg/scanner"
 )
 
 var hadErrorFlag bool = false

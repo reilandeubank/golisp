@@ -1,8 +1,8 @@
 package interpreter
 
 import (
-	"fmt"
-	"github.com/reilandeubank/golisp/parser"
+	// "fmt"
+	"github.com/reilandeubank/golisp/pkg/parser"
 )
 
 type Interpreter struct {

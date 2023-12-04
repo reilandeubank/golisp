@@ -5,7 +5,7 @@ import (
 	"reflect"
 
 	"github.com/reilandeubank/golisp/pkg/scanner"
-	"github.com/reilandeubank/golsip/pkg/parser"
+	"github.com/reilandeubank/golisp/pkg/parser"
 )
 
 func isTruthy(object interface{}) bool {
@@ -29,11 +29,11 @@ func isEqual(a interface{}, b interface{}) bool {
 	return a == b
 }
 
-func checkNumberOperand(operator scanner.Token, operand interface{}) error {
+func checkNumberOperand(operator scanner.Token, operand interface{}) (bool, error) {
 	if reflect.TypeOf(operand) == reflect.TypeOf(0.0) || reflect.TypeOf(operand) == reflect.TypeOf(0) {
-		return nil
+		return true, nil
 	}
-	return &RuntimeError{Token: operator, Message: "Operator must be a number"}
+	return false, &RuntimeError{Token: operator, Message: "Operator must be a number"}
 }
 
 func checkNumberOperands(operator scanner.Token, left interface{}, right interface{}) error {
@@ -59,9 +59,25 @@ func stringify(object interface{}) string {
 
 func isOperator(expr parser.Expression) bool {
 	switch expr.(type) {
-	case Operator:
+	case parser.Operator:
 		return true
 	default:
 		return false
 	}
+}
+
+func (i *Interpreter) cdr(k parser.Keyword) (interface{}, error) {
+	var elems []parser.Expression
+	for _, elem := range k.Args {
+		newExpr, err := i.evaluate(elem)
+		if err != nil {
+			return nil, err
+		}
+		if expr, ok := newExpr.(parser.Expression); ok {
+			elems = append(elems, expr)
+		} else {
+			return nil, &RuntimeError{Message: "type assertion failed, expected parser.Expression"}
+		}
+	}
+	return parser.ListExpr{Head: elems[1], Tail: elems[2:]}, nil
 }
