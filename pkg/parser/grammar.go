@@ -14,18 +14,18 @@ func (p *Parser) expr() (Expression, error) {
 func (p *Parser) list() (Expression, error) {
     if p.match(scanner.LEFT_PAREN) {
         // handle parsing of list
-        operator, err := p.expr() // First element is the operator or function
+        head, err := p.expr() // First element is the operator or function
         if err != nil {
             return nil, err
         }
 
-        var operands []Expression
+        var tail []Expression
         for !p.check(scanner.RIGHT_PAREN) && !p.isAtEnd() {
-            operand, err := p.expr() // Parse each operand
+            new, err := p.expr() // Parse each operand
             if err != nil {
                 return nil, err
             }
-            operands = append(operands, operand)
+            tail = append(tail, new)
         }
 
         _, err = p.consume(scanner.RIGHT_PAREN, "expect ')' after expression")
@@ -33,7 +33,7 @@ func (p *Parser) list() (Expression, error) {
             return nil, err
         }
 
-        return ListExpr{Head: operator, Tail: operands}, nil
+        return ListExpr{Head: head, Tail: tail}, nil
     }
 
     // If it's not a list, it might be an atom or other type of expression

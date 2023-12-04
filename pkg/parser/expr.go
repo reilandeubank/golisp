@@ -32,6 +32,7 @@ func (l Atom) String() string {
 
 type Operator struct {
 	Operator scanner.Token
+	Operands []Expression
 }
 
 func (o Operator) Accept(v ExprVisitor) (interface{}, error) {
