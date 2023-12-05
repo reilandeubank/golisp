@@ -39,8 +39,8 @@ func (i *Interpreter) VisitKeywordExpr(k parser.Keyword) (interface{}, error) {
 	switch k.Keyword.Type {
 	case scanner.TRUE:
 		return true, nil
-	case scanner.FALSE:
-		return false, nil
+	// case scanner.FALSE:
+	// 	return false, nil
 	case scanner.NIL:
 		return nil, nil
 	case scanner.CAR:
