@@ -15,7 +15,7 @@ func main() {
 	args := os.Args[1:]
 
 	if len(args) > 1 {
-		fmt.Println("Usage: golox [script]")
+		fmt.Println("Usage: golisp [script]")
 		os.Exit(64)
 	} else if len(args) == 1 {
 		runFile(args[0])
@@ -73,15 +73,15 @@ func run(source string) error {
 		return err
 	}
 
-	fmt.Println("Expression: " + expr.String())
-	fmt.Println()
+	// fmt.Println("Expression: " + expr.String())
+	// fmt.Println()
 
-	fmt.Println("Interpreting...")
-	fmt.Println()
+	// fmt.Println("Interpreting...")
+	// fmt.Println()
 
 	output, err := i.Interpret(expr)
 	if output != nil {
-		fmt.Println("Output: ", output)
+		fmt.Println(output)
 	}
 	if err != nil {
 		fmt.Println(err)
