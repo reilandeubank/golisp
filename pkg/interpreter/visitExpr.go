@@ -41,6 +41,8 @@ func (i *Interpreter) VisitKeywordExpr(k parser.Keyword) (interface{}, error) {
 		return true, nil
 	case scanner.FALSE:
 		return false, nil
+	case scanner.NIL:
+		return nil, nil
 	case scanner.CAR:
 		// fmt.Println("CAR of", k.Args)
 		car, err := i.evaluate(k.Args[0])
@@ -78,6 +80,59 @@ func (i *Interpreter) VisitKeywordExpr(k parser.Keyword) (interface{}, error) {
 			return nil, err
 		}
 		return checkNumberOperand(k.Keyword, expr)
+	case scanner.LISTQ:
+		if len(k.Args) != 1 {
+			return nil, &RuntimeError{Token: k.Keyword, Message: "LIST? operation must have 1 operand"}
+		}
+		expr, err := i.evaluate(k.Args[0])
+		if err != nil {
+			return nil, err
+		}
+		return reflect.TypeOf(expr) == reflect.TypeOf(parser.ListExpr{}), nil
+	case scanner.NILQ:
+		if len(k.Args) != 1 {
+			return nil, &RuntimeError{Token: k.Keyword, Message: "NUMBER? operation must have 1 operand"}
+		}
+		expr, err := i.evaluate(k.Args[0])
+		if err != nil {
+			return nil, err
+		}
+		return expr == nil, nil
+	case scanner.ANDQ:
+		if len(k.Args) != 2 {
+			return nil, &RuntimeError{Token: k.Keyword, Message: "AND? operation must have 2 operands"}
+		}
+		left, err := i.evaluate(k.Args[0])
+		if err != nil {
+			return nil, err
+		}
+		right, err := i.evaluate(k.Args[1])
+		if err != nil {
+			return nil, err
+		}
+		return isTruthy(left) && isTruthy(right), nil
+	case scanner.ORQ:
+		if len(k.Args) != 2 {
+			return nil, &RuntimeError{Token: k.Keyword, Message: "OR? operation must have 2 operands"}
+		}
+		left, err := i.evaluate(k.Args[0])
+		if err != nil {
+			return nil, err
+		}
+		right, err := i.evaluate(k.Args[1])
+		if err != nil {
+			return nil, err
+		}
+		return isTruthy(left) || isTruthy(right), nil
+	case scanner.NOTQ:
+		if len(k.Args) != 2 {
+			return nil, &RuntimeError{Token: k.Keyword, Message: "NOT? operation must have 1 operand"}
+		}
+		expr, err := i.evaluate(k.Args[0])
+		if err != nil {
+			return nil, err
+		}
+		return !isTruthy(expr), nil
 	}
 	return nil, fmt.Errorf("KEYWORDEXPR not implemented")
 }
