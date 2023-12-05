@@ -9,29 +9,55 @@ import (
 )
 
 func (i *Interpreter) VisitListExpr(l parser.ListExpr) (interface{}, error) {
-	if o, ok := l.Head.(*parser.Operator); ok {
-		o.Operands = l.Tail
-		return i.evaluate(o)
-	}
+	//fmt.Println(l.Head.String())
 
-	if k, ok := l.Head.(*parser.Keyword); ok {
-		k.Args = l.Tail
-		return i.evaluate(k)
-	}
-	return nil, fmt.Errorf("not implemented")
+	switch head := l.Head.(type) {
+	case parser.Operator:
+		// fmt.Println("OPERATOR", head.String())
+		head.Operands = l.Tail
+		return i.evaluate(head)
+	case parser.Keyword:
+		// fmt.Println("KEYWORD", head.String())
+		head.Args = l.Tail
+		return i.evaluate(head)
+	case parser.Atom:
+		// fmt.Println("ATOM LIST", head.String())
+		// returnList := prepend(head, l.Tail)
+		// fmt.Println(returnList)
+		returnList := parser.ListExpr{Head: head, Tail: l.Tail}
+		return returnList, nil
+    }
+
+	return nil, fmt.Errorf("LISTEXPR not implemented")
 }
 
 func (i *Interpreter) VisitKeywordExpr(k parser.Keyword) (interface{}, error) {
+	// fmt.Println()
+	// fmt.Println(k.String())
+	// fmt.Println()
+
 	switch k.Keyword.Type {
+	case scanner.TRUE:
+		return true, nil
+	case scanner.FALSE:
+		return false, nil
 	case scanner.CAR:
+		// fmt.Println("CAR of", k.Args)
 		car, err := i.evaluate(k.Args[0])
+		switch car.(type) {
+		case parser.ListExpr:
+			car = car.(parser.ListExpr).Head
+			return i.evaluate(car.(parser.Expression))
+		}
+		// fmt.Println("Car is", car)
 		if err != nil {
 			return nil, err
 		}
-		return parser.Atom{Value: car}, nil
+		return car, nil
 	case scanner.CDR:
 		return i.cdr(k)
 	case scanner.COND:
+		// fmt.Println("COND", k.Args)
 		for j := 0; j < len(k.Args); j += 2 {
 			condition, err := i.evaluate(k.Args[j])
 			if err != nil {
@@ -43,6 +69,7 @@ func (i *Interpreter) VisitKeywordExpr(k parser.Keyword) (interface{}, error) {
 		}
 		return nil, &RuntimeError{Token: k.Keyword, Message: "Lack of true condition"}
 	case scanner.NUMBERQ:
+		// fmt.Println(k.String())
 		if len(k.Args) != 1 {
 			return nil, &RuntimeError{Token: k.Keyword, Message: "NUMBER? operation must have 1 operand"}
 		}
@@ -52,21 +79,24 @@ func (i *Interpreter) VisitKeywordExpr(k parser.Keyword) (interface{}, error) {
 		}
 		return checkNumberOperand(k.Keyword, expr)
 	}
-	return nil, fmt.Errorf("not implemented")
+	return nil, fmt.Errorf("KEYWORDEXPR not implemented")
 }
 
 func (i *Interpreter) VisitOperatorExpr(o parser.Operator) (interface{}, error) {
 	if len(o.Operands) != 2 {
+		fmt.Println(o.Operands)
 		return nil, &RuntimeError{Token: o.Operator, Message: "Binary operation must only have two operands"}
 	}
 	left, err := i.evaluate(o.Operands[0])
 	if err != nil {
 		return nil, err
 	}
+	// fmt.Println("left", left)
 	right, err := i.evaluate(o.Operands[1])
 	if err != nil {
 		return nil, err
 	}
+	// fmt.Println("right", right)
 
 	switch o.Operator.Type {
 	case scanner.MINUS:
@@ -110,7 +140,7 @@ func (i *Interpreter) VisitOperatorExpr(o parser.Operator) (interface{}, error) 
 	case scanner.EQUAL:
 		return isEqual(left, right), nil
 	}
-	return nil, fmt.Errorf("not implemented")
+	return nil, &RuntimeError{Token: o.Operator, Message: "Invalid operator"}
 }
 
 func (i *Interpreter) VisitAtomExpr(a parser.Atom) (interface{}, error) {
@@ -118,5 +148,5 @@ func (i *Interpreter) VisitAtomExpr(a parser.Atom) (interface{}, error) {
 }
 
 func (i *Interpreter) VisitSymbolExpr(s parser.Symbol) (interface{}, error) {
-	return nil, fmt.Errorf("not implemented")
+	return nil, fmt.Errorf("SYMBOLEXPR not implemented")
 }

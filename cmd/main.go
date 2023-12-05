@@ -6,11 +6,11 @@ import (
 	"os"
 	"strings"
 	"github.com/reilandeubank/golisp/pkg/scanner"
-	// "github.com/reilandeubank/golisp/pkg/interpreter"
+	"github.com/reilandeubank/golisp/pkg/interpreter"
 	"github.com/reilandeubank/golisp/pkg/parser"
 )
 
-// var i interpreter.Interpreter = interpreter.NewInterpreter()
+var i interpreter.Interpreter = interpreter.NewInterpreter()
 func main() {
 	args := os.Args[1:]
 
@@ -30,7 +30,15 @@ func runFile(path string) error {
 		return err
 	}
 
-	run(strings.ToLower(string(bytes)))
+	err = run(strings.ToLower(string(bytes)))
+
+	if scanner.HadError() {
+		os.Exit(65)
+	}
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(70)
+	}
 
 	return nil
 }
@@ -54,36 +62,31 @@ func runPrompt() {
 	}
 }
 
-func run(source string) {
+func run(source string) error {
 	thisScanner := scanner.NewScanner(source)
 	tokens := thisScanner.ScanTokens()
-
-	// For now, just print the tokens
-	// for _, token := range tokens {
-	// 	fmt.Println(token.String())
-	// }
-
-	if scanner.HadError() {
-		os.Exit(65)
-		return
-	}
 
 	parser := parser.NewParser(tokens)
 	expr, err := parser.Parse()
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(65)
-		return
+		return err
 	}
 
-	fmt.Println(expr.String())
+	fmt.Println("Expression: " + expr.String())
+	fmt.Println()
 
-	fmt.Println("TODO: Implement interpreter")
+	fmt.Println("Interpreting...")
+	fmt.Println()
 
-	// err = i.Interpret(statements)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	os.Exit(70)
-	// 	return
-	// }
+	output, err := i.Interpret(expr)
+	if output != nil {
+		fmt.Println("Output: ", output)
+	}
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(70)
+		return err
+	}
+	return nil
 }

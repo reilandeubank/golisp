@@ -3,6 +3,7 @@ package parser
 import (
 	"github.com/reilandeubank/golisp/pkg/scanner"
 	"errors"
+	"fmt"
 )
 
 func (p *Parser) match(types ...scanner.TokenType) bool {
@@ -50,9 +51,19 @@ func (p *Parser) consume(t scanner.TokenType, message string) (scanner.Token, er
 }
 
 func (p *Parser) isKeyword() bool {
-	_, ok := scanner.Keywords[p.peek().Lexeme]
-	if ok {
-		p.advance()
+	return p.match(scanner.DEFINE, scanner.SET, scanner.CONS, scanner.COND, scanner.CAR, scanner.CDR, scanner.NIL, scanner.TRUE, scanner.FALSE, scanner.ANDQ, scanner.ORQ, scanner.NOTQ, scanner.NUMBERQ, scanner.SYMBOLQ, scanner.LISTQ, scanner.NILQ)
+}
+
+func stringify(object interface{}) string {
+	if object == nil {
+		return "nil"
 	}
-	return ok
+
+	// Type assertion for float64
+	if val, ok := object.(float64); ok {
+		return fmt.Sprintf("%g", val) // %g removes trailing zeros
+	}
+
+	// Default to using fmt.Sprintf for other types
+	return fmt.Sprintf("%v", object)
 }

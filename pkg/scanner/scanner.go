@@ -28,6 +28,25 @@ var Keywords = map[string]TokenType{
 	"nil?":    NILQ,
 }
 
+var KeywordsReverse = map[TokenType]string{
+	DEFINE:  "define",
+	SET:     "set",
+	CONS:    "cons",
+	COND:    "cond",
+	CAR:     "car",
+	CDR:     "cdr",
+	NIL:     "nil",
+	TRUE:    "true",
+	FALSE:   "false",
+	ANDQ:    "and?",
+	ORQ:     "or?",
+	NOTQ:    "not?",
+	NUMBERQ: "number?",
+	SYMBOLQ: "symbol?",
+	LISTQ:   "list?",
+	NILQ:    "nil?",
+}
+
 
 type Scanner struct {
 	Source string

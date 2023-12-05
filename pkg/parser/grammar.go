@@ -3,7 +3,7 @@ package parser
 import (
 	"github.com/reilandeubank/golisp/pkg/scanner"
 	"errors"
-	"strconv"
+	// "strconv"
 	"fmt"
 )
 
@@ -21,11 +21,20 @@ func (p *Parser) list() (Expression, error) {
 
         var tail []Expression
         for !p.check(scanner.RIGHT_PAREN) && !p.isAtEnd() {
-            new, err := p.expr() // Parse each operand
-            if err != nil {
-                return nil, err
+            if p.check(scanner.LEFT_PAREN) {
+                // Handle nested list
+                nestedList, err := p.list() // Evaluate the nested list
+                if err != nil {
+                    return nil, err
+                }
+                tail = append(tail, nestedList) // Append the evaluated nested list as a single expression
+            } else {
+                expr, err := p.expr() // Parse each operand
+                if err != nil {
+                    return nil, err
+                }
+                tail = append(tail, expr)
             }
-            tail = append(tail, new)
         }
 
         _, err = p.consume(scanner.RIGHT_PAREN, "expect ')' after expression")
@@ -42,7 +51,9 @@ func (p *Parser) list() (Expression, error) {
 
 func (p *Parser) atom() (Expression, error) {
 	if p.isKeyword() {
-		return Keyword{Keyword: p.peek()}, nil
+		k := Keyword{Keyword: p.previous()}
+		// fmt.Println("adding keyword:", scanner.KeywordsReverse[k.Keyword.Type])
+		return k, nil
 	}
 
 	if p.match(scanner.PLUS, scanner.MINUS, scanner.STAR, scanner.SLASH, scanner.EQUAL, scanner.LESS, scanner.GREATER) {
@@ -51,19 +62,22 @@ func (p *Parser) atom() (Expression, error) {
 	}
 
 	if p.match(scanner.NUMBER, scanner.STRING) {
-		var value string
+		var prevValue interface{} = p.previous().Literal
 		var err error
-		switch v := p.previous().Literal.(type) {
+		switch prevValue.(type) {
 		case string:
-			value = v
+			// fmt.Println("String: " + prevValue.(string))
+			return Atom{Value: prevValue, Type: scanner.STRING}, err
 		case float64:
-			value = strconv.FormatFloat(v, 'f', -1, 64)
+			// fmt.Println("Number: " + fmt.Sprintf("%f", prevValue.(float64)))
+			return Atom{Value: prevValue, Type: scanner.NUMBER}, err
 		default:
-			message := fmt.Sprintf("unexpected literal type %T", v)
+			// Handle other types or error
+			message := "unexpected literal type: " + fmt.Sprintf("%T", prevValue)
 			ParseError(p.peek(), message)
 			err = errors.New(message)
 		}
-		return Atom{Value: value}, err
+		return Atom{Value: nil, Type: scanner.NIL}, err
 	}
 
 	if p.match(scanner.SYMBOL) {

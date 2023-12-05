@@ -16,3 +16,7 @@ func NewInterpreter() Interpreter {
 func (i *Interpreter) evaluate(expr parser.Expression) (interface{}, error) {
 	return expr.Accept(i)
 }
+
+func (i *Interpreter) Interpret(expr parser.Expression) (interface{}, error) {
+	return i.evaluate(expr)
+}

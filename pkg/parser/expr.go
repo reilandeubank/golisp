@@ -27,7 +27,7 @@ func (l Atom) Accept(v ExprVisitor) (interface{}, error) {
 }
 
 func (l Atom) String() string {
-	return l.Value.(string)
+	return stringify(l.Value)
 }
 
 type Operator struct {
@@ -75,43 +75,8 @@ func (k Keyword) Accept(v ExprVisitor) (interface{}, error) {
 }
 
 func (k Keyword) String() string {
-	return k.Keyword.Lexeme
+	return scanner.KeywordsReverse[k.Keyword.Type]
 }
-
-// // Unary
-
-// // Unary is a struct that implements the Expression interface
-// type Unary struct {
-// 	Operator scanner.Token
-// 	Right    Expression
-// }
-
-// // Accept() is a method that returns a string representation of the expression
-// func (u Unary) Accept(v ExprVisitor) (interface{}, error) {
-// 	return v.VisitUnaryExpr(u)
-// }
-
-// func (u Unary) String() string {
-// 	return "(" + u.Operator.Lexeme + u.Right.String() + ")"
-// }
-
-// // Binary
-
-// // Binary is a struct that implements the Expression interface
-// type Binary struct {
-// 	Left     Expression
-// 	Operator scanner.Token
-// 	Right    Expression
-// }
-
-// // Accept() is a method that returns a string representation of the expression
-// func (b Binary) Accept(v ExprVisitor) (interface{}, error) {
-// 	return v.VisitBinaryExpr(b)
-// }
-
-// func (b Binary) String() string {
-// 	return "(" + b.Operator.Lexeme + b.Left.String() + b.Right.String() + ")"
-// }
 
 // Variable
 
@@ -180,19 +145,4 @@ func (s Symbol) String() string {
 
 // func (c Call) String() string {
 // 	return c.Callee.String()
-// }
-
-// // Cond
-// type Cond struct {
-// 	Condition  Expression
-// 	ThenBranch Expression
-// 	ElseBranch Expression
-// }
-
-// func (c Cond) Accept(v ExprVisitor) (interface{}, error) {
-// 	return v.VisitCondExpr(c)
-// }
-
-// func (c Cond) String() string {
-// 	return "(cond " + c.Condition.String() + " " + c.ThenBranch.String() + " " + c.ElseBranch.String() + ")"
 // }

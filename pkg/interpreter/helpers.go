@@ -1,7 +1,7 @@
 package interpreter
 
 import (
-	"fmt"
+	// "fmt"
 	"reflect"
 
 	"github.com/reilandeubank/golisp/pkg/scanner"
@@ -43,28 +43,28 @@ func checkNumberOperands(operator scanner.Token, left interface{}, right interfa
 	return &RuntimeError{Token: operator, Message: "Operators must be numbers"}
 }
 
-func stringify(object interface{}) string {
-	if object == nil {
-		return "nil"
-	}
+// func stringify(object interface{}) string {
+// 	if object == nil {
+// 		return "nil"
+// 	}
 
-	// Type assertion for float64
-	if val, ok := object.(float64); ok {
-		return fmt.Sprintf("%g", val) // %g removes trailing zeros
-	}
+// 	// Type assertion for float64
+// 	if val, ok := object.(float64); ok {
+// 		return fmt.Sprintf("%g", val) // %g removes trailing zeros
+// 	}
 
-	// Default to using fmt.Sprintf for other types
-	return fmt.Sprintf("%v", object)
-}
+// 	// Default to using fmt.Sprintf for other types
+// 	return fmt.Sprintf("%v", object)
+// }
 
-func isOperator(expr parser.Expression) bool {
-	switch expr.(type) {
-	case parser.Operator:
-		return true
-	default:
-		return false
-	}
-}
+// func isOperator(expr parser.Expression) bool {
+// 	switch expr.(type) {
+// 	case parser.Operator:
+// 		return true
+// 	default:
+// 		return false
+// 	}
+// }
 
 func (i *Interpreter) cdr(k parser.Keyword) (interface{}, error) {
 	var elems []parser.Expression
