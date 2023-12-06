@@ -85,11 +85,6 @@ func (p *Parser) atom() (Expression, error) {
 		return Symbol{Name: p.previous()}, nil
 	} 
 
-	if p.match(scanner.FALSE) {
-		// Handle false boolean literal
-		return Atom{Value: false}, nil
-	}
-
 	if p.match(scanner.TRUE) {
 		// Handle true boolean literal
 		return Atom{Value: true}, nil

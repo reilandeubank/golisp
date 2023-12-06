@@ -6,11 +6,12 @@ import (
 )
 
 type Interpreter struct {
-
+	environment *environment
 }
 
 func NewInterpreter() Interpreter {
-	return Interpreter{}
+	global := NewEnvironment()
+	return Interpreter{environment: &global}
 }
 
 func (i *Interpreter) evaluate(expr parser.Expression) (interface{}, error) {

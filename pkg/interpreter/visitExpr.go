@@ -133,6 +133,19 @@ func (i *Interpreter) VisitKeywordExpr(k parser.Keyword) (interface{}, error) {
 			return nil, err
 		}
 		return !isTruthy(expr), nil
+	case scanner.SET:
+		if len(k.Args) != 2 {
+			return nil, &RuntimeError{Token: k.Keyword, Message: "SET operation must have 2 operands"}
+		}
+		if reflect.TypeOf(k.Args[0]) != reflect.TypeOf(parser.Symbol{}) {
+			return nil, &RuntimeError{Token: k.Keyword, Message: "SET operation must have a symbol as the first operand"}
+		}
+		value, err := i.evaluate(k.Args[1])
+		if err != nil {
+			return nil, err
+		}
+		i.environment.define(k.Args[0].(parser.Symbol).Name.Lexeme, value)
+		return value, nil
 	}
 	return nil, fmt.Errorf("KEYWORDEXPR not implemented")
 }
@@ -203,5 +216,15 @@ func (i *Interpreter) VisitAtomExpr(a parser.Atom) (interface{}, error) {
 }
 
 func (i *Interpreter) VisitSymbolExpr(s parser.Symbol) (interface{}, error) {
-	return nil, fmt.Errorf("SYMBOLEXPR not implemented")
+	return i.environment.get(s.Name)
 }
+
+// func (i *Interpreter) VisitAssignExpr(a parser.Assign) (interface{}, error) {
+// 	value, err := i.evaluate(a.Value)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	i.environment.assign(a.Name, value)
+// 	return value, nil
+// }

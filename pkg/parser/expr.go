@@ -94,9 +94,9 @@ func (s Symbol) String() string {
 	return s.Name.Lexeme
 }
 
-// // Assignment
+// Assignment
 
-// // Assignment is a struct that implements the Expression interface
+// Assignment is a struct that implements the Expression interface
 // type Assign struct {
 // 	Name  scanner.Token
 // 	Value Expression
