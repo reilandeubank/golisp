@@ -256,6 +256,7 @@ func (i *Interpreter) VisitCallExpr (c parser.Call) (interface{}, error) {
 	// return function.Call(i, result)
 
 	// not done at all
+	return nil, nil
 }
 
 func (i *Interpreter) VisitFuncDefinitionExpr(f parser.FuncDefinition) (interface{}, error) {

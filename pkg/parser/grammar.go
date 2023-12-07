@@ -78,7 +78,7 @@ func (p *Parser) paramList() ([]scanner.Token, error) {
 		return nil, err
 	}
 
-	for !p.check(scanner.RIGHT_PAREN) && !p.isAtEnd() {
+	for !p.match(scanner.RIGHT_PAREN) && !p.isAtEnd() {
 		param, err := p.consume(scanner.SYMBOL, "Expect parameter name.")
 		if err != nil {
 			return nil, err

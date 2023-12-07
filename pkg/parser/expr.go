@@ -105,7 +105,7 @@ func (f FuncDefinition) Accept(v ExprVisitor) (interface{}, error) {
 }
 
 func (f FuncDefinition) String() string {
-	return "Define " + f.Name.Lexeme
+	return "Define " + f.Name.Lexeme + " " + stringify(f.Params) + " " + f.Body.String()
 }
 
 // // Call

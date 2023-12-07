@@ -33,10 +33,10 @@ func (l LispFunction) Call(i *Interpreter, arguments []interface{}) (retVal inte
 		env.define(param.Lexeme, arguments[j])
 	}
 
-	_, err := i.executeBlock(l.Declaration.Body, env)
-	if err != nil {
-		return nil, err
-	}
+	// _, err := i.executeBlock(l.Declaration.Body, env)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	// if l.IsInitializer {
 	// 	return l.Closure.getAt(0, "this")
