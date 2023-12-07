@@ -94,55 +94,40 @@ func (s Symbol) String() string {
 	return s.Name.Lexeme
 }
 
-// Assignment
+type FuncDefinition struct {
+	Name 		scanner.Token
+	Params 		[]scanner.Token
+	Body 		Expression
+}
 
-// Assignment is a struct that implements the Expression interface
-// type Assign struct {
-// 	Name  scanner.Token
-// 	Value Expression
-// }
+func (f FuncDefinition) Accept(v ExprVisitor) (interface{}, error) {
+	return v.VisitFuncDefinitionExpr(f)
+}
 
-// // Accept() is a method that returns a string representation of the expression
-// func (a Assign) Accept(v ExprVisitor) (interface{}, error) {
-// 	return v.VisitAssignExpr(a)
-// }
-
-// func (a Assign) String() string {
-// 	return " set " + a.Name.Lexeme + a.Value.String()
-// }
-
-// // Logical
-
-// // Logical is a struct that implements the Expression interface
-// type Logical struct {
-// 	Left     Expression
-// 	Operator scanner.Token
-// 	Right    Expression
-// }
-
-// // Accept() is a method that returns a string representation of the expression
-// func (l Logical) Accept(v ExprVisitor) (interface{}, error) {
-// 	return v.VisitLogicalExpr(l)
-// }
-
-// func (l Logical) String() string {
-// 	return "(" + l.Operator.Lexeme + l.Left.String() + l.Right.String() + ")"
-// }
+func (f FuncDefinition) String() string {
+	return "Define " + f.Name.Lexeme
+}
 
 // // Call
 
-// // Call is a struct that implements the Expression interface
-// type Call struct {
-// 	Callee    Expression
-// 	Paren     scanner.Token
-// 	Arguments []Expression
-// }
+// Call is a struct that implements the Expression interface
+type Call struct {
+	Callee    	Expression
+	Token 		scanner.Token	
+	ArgsList 	Expression
+}
 
-// // Accept() is a method that returns a string representation of the expression
-// func (c Call) Accept(v ExprVisitor) (interface{}, error) {
-// 	return v.VisitCallExpr(c)
-// }
+// Accept() is a method that returns a string representation of the expression
+func (c Call) Accept(v ExprVisitor) (interface{}, error) {
+	return v.VisitCallExpr(c)
+}
 
-// func (c Call) String() string {
-// 	return c.Callee.String()
-// }
+func (c Call) String() string {
+	return c.Callee.String()
+}
+
+type Function struct {
+	Name 		scanner.Token
+	Params 		[]scanner.Token
+	Body 		Expression
+}

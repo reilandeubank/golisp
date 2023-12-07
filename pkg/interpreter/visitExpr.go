@@ -22,11 +22,10 @@ func (i *Interpreter) VisitListExpr(l parser.ListExpr) (interface{}, error) {
 		return i.evaluate(head)
 	case parser.Atom:
 		// fmt.Println("ATOM LIST", head.String())
-		// returnList := prepend(head, l.Tail)
 		// fmt.Println(returnList)
 		returnList := parser.ListExpr{Head: head, Tail: l.Tail}
 		return returnList, nil
-    }
+	}
 
 	return nil, fmt.Errorf("LISTEXPR not implemented")
 }
@@ -219,12 +218,50 @@ func (i *Interpreter) VisitSymbolExpr(s parser.Symbol) (interface{}, error) {
 	return i.environment.get(s.Name)
 }
 
-// func (i *Interpreter) VisitAssignExpr(a parser.Assign) (interface{}, error) {
-// 	value, err := i.evaluate(a.Value)
-// 	if err != nil {
-// 		return nil, err
-// 	}
+func (i *Interpreter) VisitCallExpr (c parser.Call) (interface{}, error) {
+	fmt.Println("CALL", c.String())
 
-// 	i.environment.assign(a.Name, value)
-// 	return value, nil
-// }
+	// callee, err := i.evaluate(c.Callee)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// argList, err := i.evaluate(c.ArgsList)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// arguments, ok := argList.(parser.ListExpr)
+	// if !ok {
+	// 	return nil, &RuntimeError{Token: c.Token, Message: "Invalid argument list"}
+	// }
+	// argsLen := len(arguments.Tail) + 1 
+
+	// function, ok := callee.(LispCallable)
+	// if !ok {
+	// 	return nil, &RuntimeError{Token: c.Token, Message: "Can only call functions."}
+	// }
+	// if argsLen != function.Arity() {
+	// 	return nil, &RuntimeError{Token: c.Token, Message: "Expected " + fmt.Sprint(function.Arity()) + " arguments but got " + fmt.Sprint(argsLen) + "."}
+	// }
+
+	// result := make([]interface{}, 0, len(arguments.Tail)+1)
+	// headArg, err := i.evaluate(arguments.Head)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// result = append(result, headArg)
+	// for _, arg := range arguments.Tail {
+	// 	result = append(result, arg)
+	// }
+	// return function.Call(i, result)
+
+	// not done at all
+}
+
+func (i *Interpreter) VisitFuncDefinitionExpr(f parser.FuncDefinition) (interface{}, error) {
+	// fmt.Println("DEFINITION", f.String())
+
+	function := LispFunction{Declaration: f, Closure: i.environment, IsInitializer: false}
+	i.environment.define(f.Name.Lexeme, function)
+	return nil, nil
+}

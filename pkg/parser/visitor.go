@@ -9,9 +9,9 @@ type ExprVisitor interface {
 	// VisitCondExpr(c Cond) (interface{}, error)
 	// VisitUnaryExpr(u Unary) (interface{}, error)
 	VisitSymbolExpr(s Symbol) (interface{}, error)
-	// VisitAssignExpr(a Assign) (interface{}, error)
+	VisitFuncDefinitionExpr(f FuncDefinition) (interface{}, error)
 	// VisitLogicalExpr(l Logical) (interface{}, error)
-	// VisitCallExpr(c Call) (interface{}, error)
+	VisitCallExpr(c Call) (interface{}, error)
 }
 
 type StmtVisitor interface {
