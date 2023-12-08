@@ -1,7 +1,7 @@
 package interpreter
 
 import (
-	// "fmt"
+	"fmt"
 	"github.com/reilandeubank/golisp/pkg/parser"
 )
 
@@ -19,6 +19,26 @@ func (i *Interpreter) evaluate(expr parser.Expression) (interface{}, error) {
 	return expr.Accept(i)
 }
 
-func (i *Interpreter) Interpret(expr parser.Expression) (interface{}, error) {
-	return i.evaluate(expr)
+func (i *Interpreter) Interpret(exprs []parser.Expression) (error) {
+	for _, expr := range exprs {
+		out, err := i.evaluate(expr)
+		if out != nil {
+			fmt.Println(out)
+		}
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (i *Interpreter) evaluateFunction(expression parser.Expression, environment environment) (interface{}, error) {
+	previous := i.environment
+
+	defer func() {
+		i.environment = previous
+	}()
+
+	i.environment = &environment
+	return i.evaluate(expression)
 }

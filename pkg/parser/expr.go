@@ -114,7 +114,7 @@ func (f FuncDefinition) String() string {
 type Call struct {
 	Callee    	Expression
 	Token 		scanner.Token	
-	ArgsList 	Expression
+	ArgsList 	[]Expression
 }
 
 // Accept() is a method that returns a string representation of the expression

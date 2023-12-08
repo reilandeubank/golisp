@@ -144,7 +144,7 @@ func (i *Interpreter) VisitKeywordExpr(k parser.Keyword) (interface{}, error) {
 			return nil, err
 		}
 		i.environment.define(k.Args[0].(parser.Symbol).Name.Lexeme, value)
-		return value, nil
+		return nil, nil
 	}
 	return nil, fmt.Errorf("KEYWORDEXPR not implemented")
 }
@@ -219,44 +219,28 @@ func (i *Interpreter) VisitSymbolExpr(s parser.Symbol) (interface{}, error) {
 }
 
 func (i *Interpreter) VisitCallExpr (c parser.Call) (interface{}, error) {
-	fmt.Println("CALL", c.String())
+	callee, err := i.evaluate(c.Callee)
+	if err != nil {
+		return nil, err
+	}
 
-	// callee, err := i.evaluate(c.Callee)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// argList, err := i.evaluate(c.ArgsList)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	arguments := make([]interface{}, len(c.ArgsList))
+	for j, argument := range c.ArgsList {
+		arguments[j], err = i.evaluate(argument)
+		if err != nil {
+			return nil, err
+		}
+	}
 
-	// arguments, ok := argList.(parser.ListExpr)
-	// if !ok {
-	// 	return nil, &RuntimeError{Token: c.Token, Message: "Invalid argument list"}
-	// }
-	// argsLen := len(arguments.Tail) + 1 
+	function, ok := callee.(LispCallable)
+	if !ok {
+		return nil, &RuntimeError{Token: c.Token, Message: "Can only call functions."}
+	}
+	if len(arguments) != function.Arity() {
+		return nil, &RuntimeError{Token: c.Token, Message: "Expected " + fmt.Sprint(function.Arity()) + " arguments but got " + fmt.Sprint(len(arguments)) + "."}
+	}
 
-	// function, ok := callee.(LispCallable)
-	// if !ok {
-	// 	return nil, &RuntimeError{Token: c.Token, Message: "Can only call functions."}
-	// }
-	// if argsLen != function.Arity() {
-	// 	return nil, &RuntimeError{Token: c.Token, Message: "Expected " + fmt.Sprint(function.Arity()) + " arguments but got " + fmt.Sprint(argsLen) + "."}
-	// }
-
-	// result := make([]interface{}, 0, len(arguments.Tail)+1)
-	// headArg, err := i.evaluate(arguments.Head)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// result = append(result, headArg)
-	// for _, arg := range arguments.Tail {
-	// 	result = append(result, arg)
-	// }
-	// return function.Call(i, result)
-
-	// not done at all
-	return nil, nil
+	return function.Call(i, arguments)
 }
 
 func (i *Interpreter) VisitFuncDefinitionExpr(f parser.FuncDefinition) (interface{}, error) {

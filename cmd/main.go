@@ -79,10 +79,10 @@ func run(source string) error {
 	// fmt.Println("Interpreting...")
 	// fmt.Println()
 
-	output, err := i.Interpret(expr)
-	if output != nil {
-		fmt.Println(output)
-	}
+	err = i.Interpret(expr)
+	// if output != nil {
+	// 	fmt.Println(output)
+	// }
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(70)

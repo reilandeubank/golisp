@@ -116,7 +116,6 @@ func (s *Scanner) ScanToken() {
 	case '.': s.addToken(DOT)
 	case '-': s.addToken(MINUS)
 	case '+': s.addToken(PLUS)
-	case ';': s.addToken(SEMICOLON)
 	case '*': s.addToken(STAR)
 	case '=': s.addToken(EQUAL)
 	case '<': s.addToken(LESS)
@@ -130,6 +129,11 @@ func (s *Scanner) ScanToken() {
 		} else {
 			s.addToken(SLASH)
 		}
+	// Hanle comments
+	// case ';':
+	// 	for !s.isAtEnd() && s.peek() != '\n' {
+	// 		s.advance()
+	// 	}
 	// Handle whitespace
 	case ' ': 
 	case '\r': 

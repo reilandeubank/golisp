@@ -16,22 +16,22 @@ func NewParser(tokens []scanner.Token) Parser {
 	}
 }
 
-func (p *Parser) Parse() (Expression, error) {
-	// var statements []Stmt
+func (p *Parser) Parse() ([]Expression, error) {
+	var expressions []Expression
 
-	// for !p.isAtEnd() {
-	// 	dec, err := p.declaration()
-	// 	if err != nil {
-	// 		return []Stmt{}, err
-	// 	}
-	// 	statements = append(statements, dec)
-	// }
-
-	// return statements, nil
-
-	expr, err := p.expr()
-	if err != nil {
-		return Atom{Value: nil}, err
+	for !p.isAtEnd() {
+		expr, err := p.expr()
+		if err != nil {
+			return []Expression{}, err
+		}
+		expressions = append(expressions, expr)
 	}
-	return expr, err
+
+	return expressions, nil
+
+	// expr, err := p.expr()
+	// if err != nil {
+	// 	return Atom{Value: nil}, err
+	// }
+	// return expr, err
 }

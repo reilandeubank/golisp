@@ -26,23 +26,14 @@ func (l LispFunction) Arity() int {
 	return len(l.Declaration.Params)
 }
 
-func (l LispFunction) Call(i *Interpreter, arguments []interface{}) (retVal interface{}, errVal error) {
+func (l LispFunction) Call(i *Interpreter, arguments []interface{}) (interface{}, error) {
 	env := NewEnvironmentWithEnclosing(*l.Closure)
 
 	for j, param := range l.Declaration.Params {
 		env.define(param.Lexeme, arguments[j])
 	}
 
-	// _, err := i.executeBlock(l.Declaration.Body, env)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// if l.IsInitializer {
-	// 	return l.Closure.getAt(0, "this")
-	// }
-
-	return retVal, errVal
+	return i.evaluateFunction(l.Declaration.Body, env)
 }
 
 // type clock struct{}

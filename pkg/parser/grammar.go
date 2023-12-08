@@ -19,7 +19,13 @@ func (p *Parser) list() (Expression, error) {
             return nil, err
         }
 
+		if funcName, ok := head.(Symbol); ok {
+			// fmt.Println("function call", funcName.Name.Lexeme)
+			return p.functionCall(funcName)
+        }
+
 		if kw, ok := head.(Keyword); ok && kw.Keyword.Type == scanner.DEFINE {
+			// fmt.Println("function definition", kw.Keyword.Lexeme)
             return p.functionDefinition()
         }
 
@@ -44,8 +50,39 @@ func (p *Parser) list() (Expression, error) {
     return p.atom()
 }
 
+func (p *Parser) functionCall(funcName Symbol) (Expression, error) {
+	// Expecting a list of parameters
+    params, err := p.callParamList()
+    if err != nil {
+        return nil, err
+    }
+
+	_, err = p.consume(scanner.RIGHT_PAREN, "Expect ')' after function call")
+	if err != nil {
+		return nil, err
+	}
+
+	return Call{Callee: funcName, Token: funcName.Name, ArgsList: params}, nil
+}
+
+func (p *Parser) callParamList() ([]Expression, error) {
+	var params []Expression
+
+	for !p.check(scanner.RIGHT_PAREN) && !p.isAtEnd() {
+		param, err := p.expr()
+		if err != nil {
+			return nil, err
+		}
+		params = append(params, param)
+	}
+
+	return params, nil
+
+}
+
 func (p *Parser) functionDefinition() (Expression, error) {
 	functionName, err := p.consume(scanner.SYMBOL, "Expect function name.")
+	// fmt.Println("function definition:", functionName.Lexeme)
     if err != nil {
         return nil, err
     }
