@@ -134,7 +134,7 @@ func (i *Interpreter) VisitKeywordExpr(k parser.Keyword) (interface{}, error) {
 			return nil, err
 		}
 		result := isTruthy(left) || isTruthy(right)
-		if result == false {
+		if !result {
 			return nil, nil
 		}
 		return result, nil

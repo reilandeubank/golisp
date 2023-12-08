@@ -28,10 +28,4 @@ func (p *Parser) Parse() ([]Expression, error) {
 	}
 
 	return expressions, nil
-
-	// expr, err := p.expr()
-	// if err != nil {
-	// 	return Atom{Value: nil}, err
-	// }
-	// return expr, err
 }

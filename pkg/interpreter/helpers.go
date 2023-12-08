@@ -42,20 +42,3 @@ func checkNumberOperands(operator scanner.Token, left interface{}, right interfa
 	}
 	return &RuntimeError{Token: operator, Message: "Operators must be numbers"}
 }
-
-// func (i *Interpreter) cdr(k parser.Keyword) (interface{}, error) {
-// 	var elems []parser.Expression
-// 	for _, elem := range k.Args {
-// 		newExpr, err := i.evaluate(elem)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		if expr, ok := newExpr.(parser.Expression); ok {
-// 			elems = append(elems, expr)
-// 		} else {
-// 			return nil, &RuntimeError{Message: "type assertion failed, expected parser.Expression"}
-// 		}
-// 	}
-// 	fmt.Println(elems)
-// 	return parser.ListExpr{Head: elems[1], Tail: elems[2:]}, nil
-// }

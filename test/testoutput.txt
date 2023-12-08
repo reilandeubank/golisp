@@ -1,0 +1,44 @@
+go build -o main cmd/main.go
+./main test/tester.lsp
+expect ok: ok
+expect fail: fail
+ok
+ok
+ok
+ok
+
+test arithmetic operations
+ok
+ok
+ok
+ok
+
+test comparison operations
+ok
+ok
+ok
+
+test car and cdr on lists
+
+assuming (list 1 2 3) creates a list [1, 2, 3]
+ok
+ok
+
+test type checking functions
+ok
+ok
+ok
+ok
+
+logical operations
+ok
+ok
+
+function with multiple arguments
+ok
+
+more complex recursive function - fibonacci
+ok
+
+testing global variable assignment and usage
+ok

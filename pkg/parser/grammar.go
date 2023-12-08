@@ -20,12 +20,10 @@ func (p *Parser) list() (Expression, error) {
         }
 
 		if funcName, ok := head.(Symbol); ok {
-			// fmt.Println("function call", funcName.Name.Lexeme)
 			return p.functionCall(funcName)
         }
 
 		if kw, ok := head.(Keyword); ok && kw.Keyword.Type == scanner.DEFINE {
-			// fmt.Println("function definition", kw.Keyword.Lexeme)
             return p.functionDefinition()
         }
 
@@ -130,7 +128,6 @@ func (p *Parser) paramList() ([]scanner.Token, error) {
 func (p *Parser) atom() (Expression, error) {
 	if p.isKeyword() {
 		k := Keyword{Keyword: p.previous()}
-		// fmt.Println("adding keyword:", scanner.KeywordsReverse[k.Keyword.Type])
 		return k, nil
 	}
 
@@ -144,10 +141,8 @@ func (p *Parser) atom() (Expression, error) {
 		var err error
 		switch prevValue.(type) {
 		case string:
-			// fmt.Println("String: " + prevValue.(string))
 			return Atom{Value: prevValue, Type: scanner.STRING}, err
 		case float64:
-			// fmt.Println("Number: " + fmt.Sprintf("%f", prevValue.(float64)))
 			return Atom{Value: prevValue, Type: scanner.NUMBER}, err
 		default:
 			// Handle other types or error
@@ -159,7 +154,6 @@ func (p *Parser) atom() (Expression, error) {
 	}
 
 	if p.match(scanner.SYMBOL) {
-		// fmt.Println("Symbol: " + p.previous().Lexeme)
 		return Symbol{Name: p.previous()}, nil
 	} 
 
