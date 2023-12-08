@@ -9,20 +9,21 @@ import (
 )
 
 func (i *Interpreter) VisitListExpr(l parser.ListExpr) (interface{}, error) {
-	//fmt.Println(l.Head.String())
-
 	switch head := l.Head.(type) {
 	case parser.Operator:
-		// fmt.Println("OPERATOR", head.String())
 		head.Operands = l.Tail
-		return i.evaluate(head)
+		result, err := i.evaluate(head)
+		if err != nil {
+			return nil, err
+		}
+		if result == false {
+			return nil, nil
+		}
+		return result, nil
 	case parser.Keyword:
-		// fmt.Println("KEYWORD", head.String())
 		head.Args = l.Tail
 		return i.evaluate(head)
 	case parser.Atom:
-		// fmt.Println("ATOM LIST", head.String())
-		// fmt.Println(returnList)
 		returnList := parser.ListExpr{Head: head, Tail: l.Tail}
 		return returnList, nil
 	}
@@ -31,10 +32,6 @@ func (i *Interpreter) VisitListExpr(l parser.ListExpr) (interface{}, error) {
 }
 
 func (i *Interpreter) VisitKeywordExpr(k parser.Keyword) (interface{}, error) {
-	// fmt.Println()
-	// fmt.Println(k.String())
-	// fmt.Println()
-
 	switch k.Keyword.Type {
 	case scanner.TRUE:
 		return true, nil
@@ -43,22 +40,32 @@ func (i *Interpreter) VisitKeywordExpr(k parser.Keyword) (interface{}, error) {
 	case scanner.NIL:
 		return nil, nil
 	case scanner.CAR:
-		// fmt.Println("CAR of", k.Args)
 		car, err := i.evaluate(k.Args[0])
 		switch car.(type) {
 		case parser.ListExpr:
 			car = car.(parser.ListExpr).Head
 			return i.evaluate(car.(parser.Expression))
 		}
-		// fmt.Println("Car is", car)
 		if err != nil {
 			return nil, err
 		}
 		return car, nil
 	case scanner.CDR:
-		return i.cdr(k)
+		output, err := i.evaluate(k.Args[0])
+		if err != nil {
+			return nil, err
+		}
+		list, ok := output.(parser.ListExpr)
+		if !ok {
+			return nil, &RuntimeError{Token: k.Keyword, Message: "CDR operation must have a list as the first operand"}
+		}
+
+		if len(list.Tail) > 1 {
+			return parser.ListExpr{Head: list.Tail[0], Tail: list.Tail[1:]}, nil
+		} else {
+			return parser.ListExpr{Head: list.Tail[0]}, nil
+		}
 	case scanner.COND:
-		// fmt.Println("COND", k.Args)
 		for j := 0; j < len(k.Args); j += 2 {
 			condition, err := i.evaluate(k.Args[j])
 			if err != nil {
@@ -70,7 +77,6 @@ func (i *Interpreter) VisitKeywordExpr(k parser.Keyword) (interface{}, error) {
 		}
 		return nil, &RuntimeError{Token: k.Keyword, Message: "Lack of true condition"}
 	case scanner.NUMBERQ:
-		// fmt.Println(k.String())
 		if len(k.Args) != 1 {
 			return nil, &RuntimeError{Token: k.Keyword, Message: "NUMBER? operation must have 1 operand"}
 		}
@@ -79,6 +85,11 @@ func (i *Interpreter) VisitKeywordExpr(k parser.Keyword) (interface{}, error) {
 			return nil, err
 		}
 		return checkNumberOperand(k.Keyword, expr)
+	case scanner.SYMBOLQ:
+		if len(k.Args) != 1 {
+			return nil, &RuntimeError{Token: k.Keyword, Message: "SYMBOL? operation must have 1 operand"}
+		}
+		return reflect.TypeOf(k.Args[0]) == reflect.TypeOf(parser.Symbol{}), nil
 	case scanner.LISTQ:
 		if len(k.Args) != 1 {
 			return nil, &RuntimeError{Token: k.Keyword, Message: "LIST? operation must have 1 operand"}
@@ -90,7 +101,7 @@ func (i *Interpreter) VisitKeywordExpr(k parser.Keyword) (interface{}, error) {
 		return reflect.TypeOf(expr) == reflect.TypeOf(parser.ListExpr{}), nil
 	case scanner.NILQ:
 		if len(k.Args) != 1 {
-			return nil, &RuntimeError{Token: k.Keyword, Message: "NUMBER? operation must have 1 operand"}
+			return nil, &RuntimeError{Token: k.Keyword, Message: "NIL? operation must have 1 operand"}
 		}
 		expr, err := i.evaluate(k.Args[0])
 		if err != nil {
@@ -122,7 +133,11 @@ func (i *Interpreter) VisitKeywordExpr(k parser.Keyword) (interface{}, error) {
 		if err != nil {
 			return nil, err
 		}
-		return isTruthy(left) || isTruthy(right), nil
+		result := isTruthy(left) || isTruthy(right)
+		if result == false {
+			return nil, nil
+		}
+		return result, nil
 	case scanner.NOTQ:
 		if len(k.Args) != 2 {
 			return nil, &RuntimeError{Token: k.Keyword, Message: "NOT? operation must have 1 operand"}
@@ -151,19 +166,16 @@ func (i *Interpreter) VisitKeywordExpr(k parser.Keyword) (interface{}, error) {
 
 func (i *Interpreter) VisitOperatorExpr(o parser.Operator) (interface{}, error) {
 	if len(o.Operands) != 2 {
-		fmt.Println(o.Operands)
 		return nil, &RuntimeError{Token: o.Operator, Message: "Binary operation must only have two operands"}
 	}
 	left, err := i.evaluate(o.Operands[0])
 	if err != nil {
 		return nil, err
 	}
-	// fmt.Println("left", left)
 	right, err := i.evaluate(o.Operands[1])
 	if err != nil {
 		return nil, err
 	}
-	// fmt.Println("right", right)
 
 	switch o.Operator.Type {
 	case scanner.MINUS:
@@ -244,8 +256,6 @@ func (i *Interpreter) VisitCallExpr (c parser.Call) (interface{}, error) {
 }
 
 func (i *Interpreter) VisitFuncDefinitionExpr(f parser.FuncDefinition) (interface{}, error) {
-	// fmt.Println("DEFINITION", f.String())
-
 	function := LispFunction{Declaration: f, Closure: i.environment, IsInitializer: false}
 	i.environment.define(f.Name.Lexeme, function)
 	return nil, nil

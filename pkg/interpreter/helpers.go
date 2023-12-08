@@ -5,7 +5,7 @@ import (
 	"reflect"
 
 	"github.com/reilandeubank/golisp/pkg/scanner"
-	"github.com/reilandeubank/golisp/pkg/parser"
+	// "github.com/reilandeubank/golisp/pkg/parser"
 )
 
 func isTruthy(object interface{}) bool {
@@ -43,41 +43,19 @@ func checkNumberOperands(operator scanner.Token, left interface{}, right interfa
 	return &RuntimeError{Token: operator, Message: "Operators must be numbers"}
 }
 
-// func stringify(object interface{}) string {
-// 	if object == nil {
-// 		return "nil"
+// func (i *Interpreter) cdr(k parser.Keyword) (interface{}, error) {
+// 	var elems []parser.Expression
+// 	for _, elem := range k.Args {
+// 		newExpr, err := i.evaluate(elem)
+// 		if err != nil {
+// 			return nil, err
+// 		}
+// 		if expr, ok := newExpr.(parser.Expression); ok {
+// 			elems = append(elems, expr)
+// 		} else {
+// 			return nil, &RuntimeError{Message: "type assertion failed, expected parser.Expression"}
+// 		}
 // 	}
-
-// 	// Type assertion for float64
-// 	if val, ok := object.(float64); ok {
-// 		return fmt.Sprintf("%g", val) // %g removes trailing zeros
-// 	}
-
-// 	// Default to using fmt.Sprintf for other types
-// 	return fmt.Sprintf("%v", object)
+// 	fmt.Println(elems)
+// 	return parser.ListExpr{Head: elems[1], Tail: elems[2:]}, nil
 // }
-
-// func isOperator(expr parser.Expression) bool {
-// 	switch expr.(type) {
-// 	case parser.Operator:
-// 		return true
-// 	default:
-// 		return false
-// 	}
-// }
-
-func (i *Interpreter) cdr(k parser.Keyword) (interface{}, error) {
-	var elems []parser.Expression
-	for _, elem := range k.Args {
-		newExpr, err := i.evaluate(elem)
-		if err != nil {
-			return nil, err
-		}
-		if expr, ok := newExpr.(parser.Expression); ok {
-			elems = append(elems, expr)
-		} else {
-			return nil, &RuntimeError{Message: "type assertion failed, expected parser.Expression"}
-		}
-	}
-	return parser.ListExpr{Head: elems[1], Tail: elems[2:]}, nil
-}
