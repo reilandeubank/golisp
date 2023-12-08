@@ -1,14 +1,20 @@
-# golox: a lox tree-walk interpreter written in Go
+# golisp: a lisp (yisp) tree-walk interpreter written in Go
  
-This is a working interpreter of the Lox language, as
-used in the book Crafting Interpreters by Robert Nystrom
+This is a working interpreter for a subset of the Lisp language (aka Yisp)
+as outlined by Don Yessick for CS403 at the University of Alabama
 
-This interpreter is feature complete through Chapter 10
-of Crafting Interpreters, meaning it implements variables, 
-printing, loops, control flow, and functions (complete with
-working return statements and control flow). Does NOT include variable resolution, classes, or inheritence <sub>(yuck)</sub>
+This interpreter is feature complete for the language as defined by Yessick
+Notes on choices made:
 
-Current native functions include: ```clock()```, and ```toStr(number)```
+```true``` is the truth value
+
+```nil``` used for false/nil value
+
+```=``` used for equality checking
+
+```cond``` used for conditional statements
+
+The language is not case sensitive
 
 # Instructions
 
@@ -21,15 +27,15 @@ $ go version
 
 Finally, clone the repository into the current directory with
 ```
-$ git clone https://github.com/reilandeubank/golox
+$ git clone https://github.com/reilandeubank/golisp
 ```
 or into ```path/to/directory``` using 
 ```
-$ git clone https://github.com/reilandeubank/golox path/to/directory
+$ git clone https://github.com/reilandeubank/golisp path/to/directory
 ```
 
 ## Compiling
-First, move into the ```golox``` directory that was just created
+First, move into the ```golisp``` directory that was just created
 
 From here, you can use the ```make``` command to compile the interpreter into the executable ```./main``` in the current directory.
 
@@ -45,7 +51,7 @@ $ ./main
 ```
 to start a REPL or
 ```
-$ ./main file.lox
+$ ./main file.lsp
 ```
-to run ```file.lox```
+to run ```file.lsp```
 
