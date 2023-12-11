@@ -4,6 +4,7 @@ This is a working interpreter for a subset of the Lisp language (aka Yisp)
 as outlined by Don Yessick for CS403 at the University of Alabama
 
 This interpreter is feature complete for the language as defined by Yessick
+
 Notes on choices made:
 
 ```true``` for truthy values
