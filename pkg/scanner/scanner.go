@@ -18,7 +18,6 @@ var Keywords = map[string]TokenType{
 	"cdr":     CDR,
 	"nil":     NIL,
 	"true":    TRUE,
-	//"false":   FALSE,
 	"and?":    ANDQ,
 	"or?":     ORQ,
 	"not?":    NOTQ,
@@ -37,7 +36,6 @@ var KeywordsReverse = map[TokenType]string{
 	CDR:     "cdr",
 	NIL:     "nil",
 	TRUE:    "true",
-	//FALSE:   "false",
 	ANDQ:    "and?",
 	ORQ:     "or?",
 	NOTQ:    "not?",
@@ -46,7 +44,6 @@ var KeywordsReverse = map[TokenType]string{
 	LISTQ:   "list?",
 	NILQ:    "nil?",
 }
-
 
 type Scanner struct {
 	Source string
@@ -97,7 +94,6 @@ func (s *Scanner) addTokenWithTypeAndLiteral(thisType TokenType, literal interfa
 
 func (s *Scanner) ScanTokens() []Token {
 	// Driving loop
-	// Note that s.curr is not incremented in Number, String, or Identifier readers since they handle their own iteration
 	for !s.isAtEnd() {
 		s.Start = s.Curr
 		s.ScanToken()
@@ -111,15 +107,24 @@ func (s *Scanner) ScanTokens() []Token {
 func (s *Scanner) ScanToken() {
 	ch := s.advance()
 	switch ch {
-	case '(': s.addToken(LEFT_PAREN)
-	case ')': s.addToken(RIGHT_PAREN)
-	case '.': s.addToken(DOT)
-	case '-': s.addToken(MINUS)
-	case '+': s.addToken(PLUS)
-	case '*': s.addToken(STAR)
-	case '=': s.addToken(EQUAL)
-	case '<': s.addToken(LESS)
-	case '>': s.addToken(GREATER)
+	case '(':
+		s.addToken(LEFT_PAREN)
+	case ')':
+		s.addToken(RIGHT_PAREN)
+	case '.':
+		s.addToken(DOT)
+	case '-':
+		s.addToken(MINUS)
+	case '+':
+		s.addToken(PLUS)
+	case '*':
+		s.addToken(STAR)
+	case '=':
+		s.addToken(EQUAL)
+	case '<':
+		s.addToken(LESS)
+	case '>':
+		s.addToken(GREATER)
 	case '/':
 		if s.match('/') {
 			for !s.isAtEnd() && s.peek() != '\n' {
@@ -129,19 +134,14 @@ func (s *Scanner) ScanToken() {
 		} else {
 			s.addToken(SLASH)
 		}
-	// Hanle comments
-	// case ';':
-	// 	for !s.isAtEnd() && s.peek() != '\n' {
-	// 		s.advance()
-	// 	}
-	// Handle whitespace
-	case ' ': 
-	case '\r': 
-	case '\t': 
+	case ' ':
+	case '\r':
+	case '\t':
 	case '\n':
 		s.Line++
 	// Handle strings
-	case '"': s.tokenizeString()
+	case '"':
+		s.tokenizeString()
 	default:
 		if unicode.IsDigit(rune(ch)) {
 			s.tokenizeNumber()
@@ -152,7 +152,7 @@ func (s *Scanner) ScanToken() {
 			LoxError(s.Line, errorStr)
 		}
 	}
-	
+
 }
 
 func (s *Scanner) match(expected rune) bool {
@@ -163,7 +163,7 @@ func (s *Scanner) match(expected rune) bool {
 		return false
 	}
 	s.Curr++
-	return true;
+	return true
 }
 
 func (s *Scanner) tokenizeString() {
@@ -198,7 +198,7 @@ func (s *Scanner) tokenizeString() {
 		LoxError(s.Line, errorStr)
 	} else {
 		// Return token using substring created from initial and current positions
-		s.addTokenWithTypeAndLiteral(STRING, s.Source[s.Start+1 : s.Curr-1])
+		s.addTokenWithTypeAndLiteral(STRING, s.Source[s.Start+1:s.Curr-1])
 	}
 
 	// Return token using substring created from initial and current positions
@@ -206,10 +206,11 @@ func (s *Scanner) tokenizeString() {
 
 // Number reader for Scanner
 func (s *Scanner) tokenizeNumber() {
-	// Track initial position and whether or not a dot has been found
+	// Track initial position and whether a dot has been found
 	foundDot := false
 
 	// Iterate until end of number or end of file
+	// If s.Curr has not overflowed, and the current character is a digit or a dot
 	for s.Curr < len(s.Source) && (unicode.IsDigit(rune(s.Source[s.Curr])) || s.Source[s.Curr] == '.') {
 
 		// Check for dot
@@ -229,9 +230,9 @@ func (s *Scanner) tokenizeNumber() {
 	floatVal, err := strconv.ParseFloat(s.Source[s.Start:s.Curr], 64)
 
 	if err != nil {
-        errorStr := fmt.Sprintf("Invalid number at line %d", s.Line)
+		errorStr := fmt.Sprintf("Invalid number at line %d", s.Line)
 		LoxError(s.Line, errorStr)
-    }
+	}
 	// Return token using substring created from initial and current positions
 	s.addTokenWithTypeAndLiteral(NUMBER, floatVal)
 }
@@ -247,9 +248,9 @@ func (s *Scanner) tokenizeSymbol() {
 	// Check for existing keyword
 	symbol := s.Source[s.Start:s.Curr]
 	if tokentype, exists := Keywords[symbol]; exists {
-        s.addToken(tokentype)
-    } else {
-        // Set to default value if the key is not found
-        s.addToken(SYMBOL)
-    }
+		s.addToken(tokentype)
+	} else {
+		// Set to default value if the key is not found
+		s.addToken(SYMBOL)
+	}
 }
