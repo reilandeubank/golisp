@@ -2,6 +2,7 @@ package interpreter
 
 import (
 	"github.com/reilandeubank/golisp/pkg/scanner"
+	"os"
 )
 
 // environment allows for variable scope and closures. Less necessary in this implementation of Lisp
@@ -28,6 +29,9 @@ func (e *environment) get(name scanner.Token) (interface{}, error) {
 	value, ok := e.values[name.Lexeme]
 	if !ok && e.enclosing != nil {
 		return e.enclosing.get(name)
+	} else if name.Lexeme == "exit" {
+		os.Exit(0)
+		return value, nil
 	} else if !ok {
 		return nil, &RuntimeError{Token: name, Message: "Undefined variable '" + name.Lexeme + "'."}
 	}
