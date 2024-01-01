@@ -6,22 +6,21 @@ import (
 
 // Expression interface
 
-// Interface in go is similar to an abstract class in Java
 // Expression is an interface that all expressions will implement
 type Expression interface {
 	Accept(v ExprVisitor) (interface{}, error)
 	String() string
 }
 
-// Literal
+// Atom Interface
 
-// Literal is a struct that implements the Expression interface
+// Atom is a struct that implements the Expression interface
 type Atom struct {
 	Value interface{}
 	Type  scanner.TokenType
 }
 
-// Accept() is a method that returns a string representation of the expression
+// Accept is a method that visits the Atom expression and returns the result
 func (l Atom) Accept(v ExprVisitor) (interface{}, error) {
 	return v.VisitAtomExpr(l)
 }
@@ -95,9 +94,9 @@ func (s Symbol) String() string {
 }
 
 type FuncDefinition struct {
-	Name 		scanner.Token
-	Params 		[]scanner.Token
-	Body 		Expression
+	Name   scanner.Token
+	Params []scanner.Token
+	Body   Expression
 }
 
 func (f FuncDefinition) Accept(v ExprVisitor) (interface{}, error) {
@@ -108,16 +107,16 @@ func (f FuncDefinition) String() string {
 	return "Define " + f.Name.Lexeme + " " + stringify(f.Params) + " " + f.Body.String()
 }
 
-// // Call
+// Call
 
 // Call is a struct that implements the Expression interface
 type Call struct {
-	Callee    	Expression
-	Token 		scanner.Token	
-	ArgsList 	[]Expression
+	Callee   Expression
+	Token    scanner.Token
+	ArgsList []Expression
 }
 
-// Accept() is a method that returns a string representation of the expression
+// Accept is a method that returns a string representation of the expression
 func (c Call) Accept(v ExprVisitor) (interface{}, error) {
 	return v.VisitCallExpr(c)
 }
@@ -127,7 +126,7 @@ func (c Call) String() string {
 }
 
 type Function struct {
-	Name 		scanner.Token
-	Params 		[]scanner.Token
-	Body 		Expression
+	Name   scanner.Token
+	Params []scanner.Token
+	Body   Expression
 }

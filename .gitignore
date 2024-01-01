@@ -19,3 +19,4 @@ golox/pkg/scanner/errorHandler.txt
 golox/pkg/scanner/scanner.txt
 golox/pkg/scanner/token.txt
 golox/pkg/scanner/tokentype.txt
+/main

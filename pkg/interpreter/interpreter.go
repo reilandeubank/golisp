@@ -7,19 +7,22 @@ import (
 
 type Interpreter struct {
 	environment *environment
-	globals    *environment
+	globals     *environment
 }
 
+// NewInterpreter defines an interpreter instance where the environment and globals are the same environment
 func NewInterpreter() Interpreter {
 	global := NewEnvironment()
 	return Interpreter{environment: &global, globals: &global}
 }
 
+// evaluate calls the Accept method on a single expression
 func (i *Interpreter) evaluate(expr parser.Expression) (interface{}, error) {
 	return expr.Accept(i)
 }
 
-func (i *Interpreter) Interpret(exprs []parser.Expression) (error) {
+// Interpret will evaluate all expressions in the source code, printing out returned values
+func (i *Interpreter) Interpret(exprs []parser.Expression) error {
 	for _, expr := range exprs {
 		out, err := i.evaluate(expr)
 		if out != nil {
@@ -32,6 +35,8 @@ func (i *Interpreter) Interpret(exprs []parser.Expression) (error) {
 	return nil
 }
 
+// evaluateFunction will call evaluate the function's expression
+// and then return the current environment to normal after completion
 func (i *Interpreter) evaluateFunction(expression parser.Expression, environment environment) (interface{}, error) {
 	previous := i.environment
 

@@ -8,8 +8,9 @@ import (
 	// "github.com/reilandeubank/golisp/pkg/parser"
 )
 
+// isTruthy shares a definition of truthiness with Go. 'nil', 0, and 'false' are false, all else are true
 func isTruthy(object interface{}) bool {
-	if object == nil || object == 0.0 || object == 0 { // only false, nil, and 0 are falsey
+	if object == nil || object == 0 { // only false, nil, and 0 are falsey
 		return false
 	}
 

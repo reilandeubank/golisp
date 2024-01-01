@@ -6,16 +6,8 @@ import (
 	"github.com/reilandeubank/golisp/pkg/scanner"
 )
 
-var hadErrorFlag bool = false
-
-func HadError() bool {
-	return hadErrorFlag
-}
-
-func SetErrorFlag(val bool) {
-	hadErrorFlag = val
-}
-
+// RuntimeError defines a new Error type. Did not know this was possible until I started work on
+// the interpreter, so this would be the better way to implement my scanner and parser errors
 type RuntimeError struct {
 	Token   scanner.Token
 	Message string
