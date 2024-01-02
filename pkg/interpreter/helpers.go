@@ -4,7 +4,7 @@ import (
 	// "fmt"
 	"reflect"
 
-	"github.com/reilandeubank/golisp/pkg/scanner"
+	"golisp/pkg/scanner"
 	// "github.com/reilandeubank/golisp/pkg/parser"
 )
 

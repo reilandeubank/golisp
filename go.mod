@@ -1,3 +1,3 @@
-module github.com/reilandeubank/golisp
+module golisp
 
 go 1.21

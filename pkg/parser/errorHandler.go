@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"github.com/reilandeubank/golisp/pkg/scanner"
+	"golisp/pkg/scanner"
 )
 
 // ParseError reports an error through the scanner. Probably should've used the same

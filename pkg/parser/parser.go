@@ -1,18 +1,18 @@
 package parser
 
 import (
-	"github.com/reilandeubank/golisp/pkg/scanner"
+	"golisp/pkg/scanner"
 )
 
 type Parser struct {
 	Tokens []scanner.Token
-	Curr int
+	Curr   int
 }
 
 func NewParser(tokens []scanner.Token) Parser {
 	return Parser{
 		Tokens: tokens,
-		Curr: 0,
+		Curr:   0,
 	}
 }
 

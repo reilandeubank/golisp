@@ -3,7 +3,7 @@ package interpreter
 import (
 	"fmt"
 
-	"github.com/reilandeubank/golisp/pkg/scanner"
+	"golisp/pkg/scanner"
 )
 
 // RuntimeError defines a new Error type. Did not know this was possible until I started work on

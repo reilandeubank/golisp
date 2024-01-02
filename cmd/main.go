@@ -3,14 +3,15 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"golisp/pkg/interpreter"
+	"golisp/pkg/parser"
+	"golisp/pkg/scanner"
 	"os"
 	"strings"
-	"github.com/reilandeubank/golisp/pkg/scanner"
-	"github.com/reilandeubank/golisp/pkg/interpreter"
-	"github.com/reilandeubank/golisp/pkg/parser"
 )
 
 var i interpreter.Interpreter = interpreter.NewInterpreter()
+
 func main() {
 	args := os.Args[1:]
 

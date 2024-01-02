@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/reilandeubank/golisp/pkg/parser"
-	"github.com/reilandeubank/golisp/pkg/scanner"
+	"golisp/pkg/parser"
+	"golisp/pkg/scanner"
 )
 
 // VisitListExpr evaluates a list which could be an operation, keyword and arguments, or a simple list of atoms

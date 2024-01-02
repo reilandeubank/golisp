@@ -3,7 +3,7 @@ package interpreter
 import (
 	// "time"
 	// "fmt"
-	"github.com/reilandeubank/golisp/pkg/parser"
+	"golisp/pkg/parser"
 )
 
 // LispCallable  is the interface that LispFunction implements (unnecessary?)
@@ -16,7 +16,7 @@ type LispCallable interface {
 // LispFunction is the struct that all functions in the language are stored as
 type LispFunction struct {
 	Declaration   parser.FuncDefinition
-	Closure       *environment
+	Closure       *Environment
 	IsInitializer bool
 }
 

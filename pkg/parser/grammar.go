@@ -2,7 +2,7 @@ package parser
 
 import (
 	"errors"
-	"github.com/reilandeubank/golisp/pkg/scanner"
+	"golisp/pkg/scanner"
 	// "strconv"
 	"fmt"
 )

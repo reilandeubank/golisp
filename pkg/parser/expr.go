@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"github.com/reilandeubank/golisp/pkg/scanner"
+	"golisp/pkg/scanner"
 )
 
 // Expression interface

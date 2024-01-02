@@ -2,12 +2,12 @@ package interpreter
 
 import (
 	"fmt"
-	"github.com/reilandeubank/golisp/pkg/parser"
+	"golisp/pkg/parser"
 )
 
 type Interpreter struct {
-	environment *environment
-	globals     *environment
+	environment *Environment
+	globals     *Environment
 }
 
 // NewInterpreter defines an interpreter instance where the environment and globals are the same environment
@@ -37,7 +37,7 @@ func (i *Interpreter) Interpret(exprs []parser.Expression) error {
 
 // evaluateFunction will call evaluate the function's expression
 // and then return the current environment to normal after completion
-func (i *Interpreter) evaluateFunction(expression parser.Expression, environment environment) (interface{}, error) {
+func (i *Interpreter) evaluateFunction(expression parser.Expression, environment Environment) (interface{}, error) {
 	previous := i.environment
 
 	defer func() {

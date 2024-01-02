@@ -1,7 +1,7 @@
 package interpreter
 
 import (
-	"github.com/reilandeubank/golisp/pkg/scanner"
+	"golisp/pkg/scanner"
 	"os"
 )
 

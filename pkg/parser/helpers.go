@@ -3,7 +3,7 @@ package parser
 import (
 	"errors"
 	"fmt"
-	"github.com/reilandeubank/golisp/pkg/scanner"
+	"golisp/pkg/scanner"
 )
 
 // match parses a token and if it matches any of the passed TokenTypes
