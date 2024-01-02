@@ -19,7 +19,11 @@ func main() {
 		fmt.Println("Usage: golisp [script]")
 		os.Exit(64)
 	} else if len(args) == 1 {
-		runFile(args[0])
+		err := runFile(args[0])
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(70)
+		}
 	} else {
 		runPrompt()
 	}
@@ -45,21 +49,25 @@ func runFile(path string) error {
 }
 
 func runPrompt() {
-	bufscanner := bufio.NewScanner(os.Stdin)
+	theScanner := bufio.NewScanner(os.Stdin)
 
 	for {
 		fmt.Print(">>> ")
-		if !bufscanner.Scan() {
+		if !theScanner.Scan() {
 			break
 		}
 
-		line := bufscanner.Text()
-		run(strings.ToLower(line))
+		line := theScanner.Text()
+		err := run(strings.ToLower(line))
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(70)
+		}
 		scanner.SetErrorFlag(false)
 	}
 
-	if bufscanner.Err() != nil {
-		fmt.Println("An error occurred:", bufscanner.Err())
+	if theScanner.Err() != nil {
+		fmt.Println("An error occurred:", theScanner.Err())
 	}
 }
 
@@ -67,8 +75,8 @@ func run(source string) error {
 	thisScanner := scanner.NewScanner(source)
 	tokens := thisScanner.ScanTokens()
 
-	parser := parser.NewParser(tokens)
-	expr, err := parser.Parse()
+	thisParser := parser.NewParser(tokens)
+	expr, err := thisParser.Parse()
 	if err != nil {
 		fmt.Println(err)
 		return err
